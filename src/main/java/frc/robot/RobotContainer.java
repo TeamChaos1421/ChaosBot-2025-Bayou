@@ -7,10 +7,12 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriverController;
 import frc.robot.Constants.OperatorController;
+import frc.robot.commands.AlignToReefRight;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ZeroHeading;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Limelight;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -25,9 +27,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final DriveTrain driveTrain = new DriveTrain();
+  private final Limelight limelight = new Limelight();
+  private final DriveTrain driveTrain = new DriveTrain(limelight);
 
   private final ZeroHeading zeroHeading = new ZeroHeading(driveTrain);
+  private final AlignToReefRight alignToReefRight = new AlignToReefRight(driveTrain, limelight, true);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(DriverController.DRIVER_JOYSTICK);
@@ -59,6 +63,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     driverController.start().onTrue(zeroHeading);
+
+    driverController.pov(90).whileTrue(alignToReefRight);
   }
 
   /**

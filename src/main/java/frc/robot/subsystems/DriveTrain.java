@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.filter.MedianFilter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -15,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.SensorIDs;
+import frc.robot.Constants.VisionConstants;
 
 public class DriveTrain extends SubsystemBase {
   private final SwerveModule m_frontLeft =
@@ -47,15 +50,38 @@ public class DriveTrain extends SubsystemBase {
 
   public final Pigeon2 m_gyro = new Pigeon2(SensorIDs.GYRO, "1912pizzavore");
 
+  Limelight limelight;
+
   public boolean fieldRelative;
 
+  MedianFilter limelightXFilter;
+  MedianFilter limelightYFilter;
+  MedianFilter limelightYawFilter;
+
+  double compositeLatency;
+  Pose2d compositeVisionPose;
+
+  boolean isVisionValid;
+
   /** Creates a new DriveTrain. */
-  public DriveTrain() {
+  public DriveTrain(Limelight l) {
+
+    limelight = l;
     fieldRelative = true;
+
+    limelightXFilter = new MedianFilter(3);
+    limelightYFilter = new MedianFilter(3);
+    limelightYawFilter = new MedianFilter(3);
+
+    compositeLatency = 0;
+    compositeVisionPose = new Pose2d();
+
+    isVisionValid = true;
   }
 
   @Override
   public void periodic() {
+    processFrame();
     SmartDashboard.putNumber("gyro", getHeading());
     // This method will be called once per scheduler run
   }
@@ -130,5 +156,41 @@ public class DriveTrain extends SubsystemBase {
     SwerveModulePosition[] m_positions = {m_frontLeft.getPosition(),m_rearLeft.getPosition(),
     m_rearRight.getPosition(),m_frontRight.getPosition()};
     return m_positions;
+  }
+
+  public void processFrame() {
+    double x = 0;
+    double y = 0;
+    double yaw = 0;
+    double totalArea = 0;
+    isVisionValid = false;
+
+    if (limelight.getTagId() > 0) {
+      if (limelight.getTargetArea() > VisionConstants.TARGET_AREA_THRESHHOLD) {
+        totalArea += limelight.getTargetArea();
+        x += limelight.getBotPose2d().getX() * limelight.getTargetArea();
+        y += limelight.getBotPose2d().getY() * limelight.getTargetArea();
+        yaw += limelight.getBotPose2d().getRotation().getDegrees() * limelight.getTargetArea();
+        compositeLatency += limelight.getLatency();
+      }
+    } 
+
+    if (totalArea < VisionConstants.TOTAL_TARGET_AREA_THRESHHOLD) {
+      isVisionValid = false;
+      compositeLatency = 0;
+    } else {
+      isVisionValid = true;
+      x /= totalArea;
+      y /= totalArea;
+      yaw /= totalArea;
+      compositeLatency /= totalArea;
+
+      compositeVisionPose = new Pose2d(
+        limelightXFilter.calculate(x),
+        limelightYFilter.calculate(y),
+        Rotation2d.fromDegrees(limelightYawFilter.calculate(yaw))
+      );
+    }
+
   }
 }

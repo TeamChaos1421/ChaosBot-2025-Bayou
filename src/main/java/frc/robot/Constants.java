@@ -51,6 +51,11 @@ public final class Constants {
     public static final int CANDLE = 9;
   }
 
+  public static class VisionConstants {
+    public static final double TARGET_AREA_THRESHHOLD = 1.5;
+    public static final double TOTAL_TARGET_AREA_THRESHHOLD = 3.0;
+  }
+
   public static class MotorSpeeds {
     public static final double SHOOTER = 1;
     public static final double FEEDER  = -0.3;
