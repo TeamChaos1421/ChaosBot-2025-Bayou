@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
-
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,8 +14,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.SensorIDs;
 import frc.robot.Constants.VisionConstants;
+import com.studica.frc.AHRS;
 
 public class DriveTrain extends SubsystemBase {
   private final SwerveModule m_frontLeft =
@@ -48,7 +46,7 @@ public class DriveTrain extends SubsystemBase {
       DriveConstants.REAR_RIGHT_TURNING_ENCODER_ID,
       DriveConstants.REAR_RIGHT_MAGNET_OFFSET);
 
-  public final Pigeon2 m_gyro = new Pigeon2(SensorIDs.GYRO, "1912pizzavore");
+  public AHRS m_gyro = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
   Limelight limelight;
 
@@ -141,11 +139,11 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public Rotation2d getRotation2d() {
-    return Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble());
+    return Rotation2d.fromDegrees(-m_gyro.getYaw());
   }
 
   public double getHeading() {
-    return m_gyro.getYaw().getValueAsDouble();
+    return -m_gyro.getYaw();
   }
 
   public void zeroHeading() {

@@ -7,12 +7,12 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriverController;
 import frc.robot.Constants.OperatorController;
-import frc.robot.commands.AlignToReefRight;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ZeroHeading;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Limelight;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -31,7 +31,6 @@ public class RobotContainer {
   private final DriveTrain driveTrain = new DriveTrain(limelight);
 
   private final ZeroHeading zeroHeading = new ZeroHeading(driveTrain);
-  private final AlignToReefRight alignToReefRight = new AlignToReefRight(driveTrain, limelight, true);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(DriverController.DRIVER_JOYSTICK);
@@ -43,9 +42,9 @@ public class RobotContainer {
 
     driveTrain.setDefaultCommand(
       new RunCommand(() -> driveTrain.drive(
-        -driverController.getLeftY()*DriveConstants.DRIVE_SPEED, 
-        -driverController.getLeftX()*DriveConstants.DRIVE_SPEED, 
-        -driverController.getRightX()*DriveConstants.DRIVE_SPEED, 
+        -MathUtil.applyDeadband(driverController.getLeftY(), Constants.DriverController.XY_DEADBAND)*DriveConstants.DRIVE_SPEED, 
+        -MathUtil.applyDeadband(driverController.getLeftX(), Constants.DriverController.XY_DEADBAND)*DriveConstants.DRIVE_SPEED, 
+        -MathUtil.applyDeadband(driverController.getRightX(), Constants.DriverController.ROT_DEADBAND)*DriveConstants.DRIVE_SPEED, 
         driveTrain.fieldRelative), 
       driveTrain));
     // Configure the trigger bindings
@@ -63,8 +62,6 @@ public class RobotContainer {
    */
   private void configureBindings() {
     driverController.start().onTrue(zeroHeading);
-
-    driverController.pov(90).whileTrue(alignToReefRight);
   }
 
   /**

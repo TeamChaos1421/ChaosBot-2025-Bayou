@@ -22,7 +22,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 class TurningEncoder {
   private final CANcoder m_cancoder;
   public TurningEncoder (int ID, double MagnetOffset) {
-    m_cancoder = new CANcoder(ID, "1912pizzavore");
+    m_cancoder = new CANcoder(ID);
   }
   public double getPositionRadians() {
     return m_cancoder.getAbsolutePosition().getValueAsDouble() * 2. * Math.PI;

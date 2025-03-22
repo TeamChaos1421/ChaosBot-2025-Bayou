@@ -72,32 +72,32 @@ public final class Constants {
 
   public static class DriveConstants {
 
-    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 1;
-    public static final int FRONT_LEFT_TURNING_MOTOR_ID = 2;
-    public static final int FRONT_LEFT_TURNING_ENCODER_ID = 1;
-    public static final double FRONT_LEFT_MAGNET_OFFSET = -0.132568359375;
+    public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 52;
+    public static final int FRONT_LEFT_TURNING_MOTOR_ID = 59;
+    public static final int FRONT_LEFT_TURNING_ENCODER_ID = 11;
+    public static final double FRONT_LEFT_MAGNET_OFFSET = -0.004638671875;
 
-    public static final int REAR_LEFT_DRIVE_MOTOR_ID = 3;
-    public static final int REAR_LEFT_TURNING_MOTOR_ID = 4;
-    public static final int REAR_LEFT_TURNING_ENCODER_ID = 2;
-    public static final double REAR_LEFT_MAGNET_OFFSET = -0.395263671875;
+    public static final int REAR_LEFT_DRIVE_MOTOR_ID = 56;
+    public static final int REAR_LEFT_TURNING_MOTOR_ID = 61;
+    public static final int REAR_LEFT_TURNING_ENCODER_ID = 13;
+    public static final double REAR_LEFT_MAGNET_OFFSET = -0.245361328125;
 
-    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 7;
-    public static final int FRONT_RIGHT_TURNING_MOTOR_ID = 8;
-    public static final int FRONT_RIGHT_TURNING_ENCODER_ID = 4;
-    public static final double FRONT_RIGHT_MAGNET_OFFSET = -0.323974609375;
+    public static final int FRONT_RIGHT_DRIVE_MOTOR_ID = 55;
+    public static final int FRONT_RIGHT_TURNING_MOTOR_ID = 58;
+    public static final int FRONT_RIGHT_TURNING_ENCODER_ID = 10;
+    public static final double FRONT_RIGHT_MAGNET_OFFSET = -0.09228515625;
 
-    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 5;
-    public static final int REAR_RIGHT_TURNING_MOTOR_ID = 6;
-    public static final int REAR_RIGHT_TURNING_ENCODER_ID = 3;
-    public static final double REAR_RIGHT_MAGNET_OFFSET = -0.495849609375;
+    public static final int REAR_RIGHT_DRIVE_MOTOR_ID = 54;
+    public static final int REAR_RIGHT_TURNING_MOTOR_ID = 60;
+    public static final int REAR_RIGHT_TURNING_ENCODER_ID = 12;
+    public static final double REAR_RIGHT_MAGNET_OFFSET = -0.1640625;
 
     public static final int GYROSCOPE_ID = 0;
 
     public static final double DRIVE_SPEED = 1;
 
-    public static final double TRACK_WIDTH = Units.inchesToMeters(19);
-    public static final double WHEEL_BASE = Units.inchesToMeters(19);
+    public static final double TRACK_WIDTH = Units.inchesToMeters(25);
+    public static final double WHEEL_BASE = Units.inchesToMeters(24.5);
     /*public static final double FRONT_WHEEL_X = Units.inchesToMeters(6.456);
     public static final double REAR_WHEEL_X = Units.inchesToMeters(12.293);*/
     public static final SwerveDriveKinematics DRIVE_KINEMATICS =
@@ -121,8 +121,8 @@ public final class Constants {
   }
 
   public static class DriverController {
-    public static final double XY_DEADBAND = .05;
-    public static final double ROT_DEADBAND = .05;
+    public static final double XY_DEADBAND = .1;
+    public static final double ROT_DEADBAND = .1;
 
     public static final int DRIVER_JOYSTICK = 0;
     //Controller Axes
