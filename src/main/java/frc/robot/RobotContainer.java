@@ -24,8 +24,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 
@@ -52,15 +52,7 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(DriverController.DRIVER_JOYSTICK);
   private final CommandXboxController operatorController = new CommandXboxController(OperatorController.OPERATOR_JOYSTICK);
-  private final Joystick buttonPanel = new Joystick(ButtonPanel.PANEL_JOYSTICK);
-
-  private final JoystickButton setTargetL1 = new JoystickButton(buttonPanel, 1);
-  private final JoystickButton setTargetL2 = new JoystickButton(buttonPanel, 2);
-  private final JoystickButton setTargetAL = new JoystickButton(buttonPanel, 7);
-  private final JoystickButton setTargetL3 = new JoystickButton(buttonPanel, 3);
-  private final JoystickButton setTargetAH = new JoystickButton(buttonPanel, 8);
-  private final JoystickButton setTargetL4 = new JoystickButton(buttonPanel, 4);
-  private final JoystickButton setTargetIntake = new JoystickButton(buttonPanel, 5);
+  private final CommandJoystick buttonPanel = new CommandJoystick(ButtonPanel.PANEL_JOYSTICK);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -100,7 +92,7 @@ public class RobotContainer {
     );
 
     s_Climber.setDefaultCommand(Commands.run(
-        () -> s_Climber.setSpeed(-buttonPanel.getRawAxis(Joystick.kDefaultYChannel)),
+        () -> s_Climber.setSpeed(-buttonPanel.getHID().getRawAxis(Joystick.kDefaultYChannel)),
         s_Climber
     ));
     // Configure the trigger bindings
@@ -146,19 +138,19 @@ public class RobotContainer {
     operatorController.pov(180).onTrue(new InstantCommand(() -> s_AlgaeIntake.setAngle(Value.kReverse)));
 
     // CODRIVER BUTTON PANEL
-    setTargetL1.onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.l1;}));
-    setTargetL2.onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.l2;}));
-    setTargetAL.onTrue(new InstantCommand(() -> {
+    buttonPanel.button(ButtonPanel.setTargetIntake).onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.intake;}));
+    buttonPanel.button(ButtonPanel.setTargetL1).onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.l1;}));
+    buttonPanel.button(ButtonPanel.setTargetL2).onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.l2;}));
+    buttonPanel.button(ButtonPanel.setTargetAL).onTrue(new InstantCommand(() -> {
         States.mElevatorState = States.ElevatorStates.aL;
         s_AlgaeIntake.setAngle(Value.kReverse);
     }));
-    setTargetL3.onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.l3;}));
-    setTargetAH.onTrue(new InstantCommand(() -> {
+    buttonPanel.button(ButtonPanel.setTargetL3).onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.l3;}));
+    buttonPanel.button(ButtonPanel.setTargetAH).onTrue(new InstantCommand(() -> {
         States.mElevatorState = States.ElevatorStates.aH;
         s_AlgaeIntake.setAngle(Value.kReverse);
     }));
-    setTargetL4.onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.l4;}));
-    setTargetIntake.onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.intake;}));
+    buttonPanel.button(ButtonPanel.setTargetL4).onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.l4;}));
   }
 
   /**

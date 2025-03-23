@@ -168,6 +168,14 @@ public final class Constants {
 
   public static class ButtonPanel {
     public static final int PANEL_JOYSTICK = 2;
+
+    public static final int setTargetL1 = 1;
+    public static final int setTargetL2 = 2;
+    public static final int setTargetAL = 7;
+    public static final int setTargetL3 = 3;
+    public static final int setTargetAH = 8;
+    public static final int setTargetL4 = 4;
+    public static final int setTargetIntake = 5;
   }
 
   public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
