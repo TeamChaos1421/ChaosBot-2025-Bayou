@@ -9,12 +9,18 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.VisionConstants;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 
 public class DriveTrain extends SubsystemBase {
@@ -50,8 +56,6 @@ public class DriveTrain extends SubsystemBase {
 
   Limelight limelight;
 
-  public boolean fieldRelative;
-
   MedianFilter limelightXFilter;
   MedianFilter limelightYFilter;
   MedianFilter limelightYawFilter;
@@ -61,11 +65,17 @@ public class DriveTrain extends SubsystemBase {
 
   boolean isVisionValid;
 
+  public SwerveDriveOdometry swerveOdometry;
+  public RobotConfig config = new RobotConfig(
+    Constants.AutoConstants.ROBOT_MASS_KG,
+    Constants.AutoConstants.ROBOT_MOI,
+    Constants.AutoConstants.moduleConfig,
+    Constants.DriveConstants.TRACK_WIDTH);
+
   /** Creates a new DriveTrain. */
   public DriveTrain(Limelight l) {
 
     limelight = l;
-    fieldRelative = true;
 
     limelightXFilter = new MedianFilter(3);
     limelightYFilter = new MedianFilter(3);
@@ -75,11 +85,36 @@ public class DriveTrain extends SubsystemBase {
     compositeVisionPose = new Pose2d();
 
     isVisionValid = true;
+
+    swerveOdometry = new SwerveDriveOdometry(DriveConstants.DRIVE_KINEMATICS, getRotation2d(), get_positions());
+
+    AutoBuilder.configure(
+      () -> swerveOdometry.getPoseMeters(), // Robot pose supplier
+      (Pose2d pose) -> swerveOdometry.resetPosition(getRotation2d(), get_positions(), pose), // First used to be getHeading(), // Method to reset odometry (will be called if your auto has a starting pose)
+      this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+      this::driveAuto, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+      new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+        Constants.AutoConstants.translationPID, // Translation PID constants
+        Constants.AutoConstants.rotationPID // Rotation PID constants
+      ),
+      config, // The robot configuration
+      () -> {
+        // Boolean supplier that controls when the path will be mirrored for the red alliance
+        // This will flip the path being followed to the red side of the field.
+        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this // Reference to this subsystem to set requirements
+    );
   }
 
   @Override
   public void periodic() {
-    processFrame();
     SmartDashboard.putNumber("gyro", getHeading());
     // This method will be called once per scheduler run
   }
@@ -100,6 +135,11 @@ public class DriveTrain extends SubsystemBase {
           : new ChassisSpeeds(m_xSpeed, m_ySpeed, m_rot));
 
     setModuleStates(swerveModuleStates);
+  }
+
+  public void driveAuto(ChassisSpeeds speeds) {
+    SwerveModuleState[] states = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
+    setModuleStates(states);
   }
 
   public SwerveModuleState[] getModuleStates() {
@@ -154,41 +194,5 @@ public class DriveTrain extends SubsystemBase {
     SwerveModulePosition[] m_positions = {m_frontLeft.getPosition(),m_rearLeft.getPosition(),
     m_rearRight.getPosition(),m_frontRight.getPosition()};
     return m_positions;
-  }
-
-  public void processFrame() {
-    double x = 0;
-    double y = 0;
-    double yaw = 0;
-    double totalArea = 0;
-    isVisionValid = false;
-
-    if (limelight.getTagId() > 0) {
-      if (limelight.getTargetArea() > VisionConstants.TARGET_AREA_THRESHHOLD) {
-        totalArea += limelight.getTargetArea();
-        x += limelight.getBotPose2d().getX() * limelight.getTargetArea();
-        y += limelight.getBotPose2d().getY() * limelight.getTargetArea();
-        yaw += limelight.getBotPose2d().getRotation().getDegrees() * limelight.getTargetArea();
-        compositeLatency += limelight.getLatency();
-      }
-    } 
-
-    if (totalArea < VisionConstants.TOTAL_TARGET_AREA_THRESHHOLD) {
-      isVisionValid = false;
-      compositeLatency = 0;
-    } else {
-      isVisionValid = true;
-      x /= totalArea;
-      y /= totalArea;
-      yaw /= totalArea;
-      compositeLatency /= totalArea;
-
-      compositeVisionPose = new Pose2d(
-        limelightXFilter.calculate(x),
-        limelightYFilter.calculate(y),
-        Rotation2d.fromDegrees(limelightYawFilter.calculate(yaw))
-      );
-    }
-
   }
 }
