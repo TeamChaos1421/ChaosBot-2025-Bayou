@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.PIDConstants;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -177,33 +174,4 @@ public final class Constants {
     public static final int setTargetL4 = 4;
     public static final int setTargetIntake = 5;
   }
-
-  public static final class AutoConstants { //TODO: The below constants are used in the example auto, and must be tuned to specific robot
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-    public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-
-    //TODO: Must be tuned to specific robot
-    public static final PIDConstants translationPID = new PIDConstants(5, 0, 0);/// All values weree 0. Chnaged to see if the robot moves in automous
-    public static final PIDConstants rotationPID = new PIDConstants(5, 0, 0);
-
-    //TODO: Must be tuned to specific robot
-    public static final double ROBOT_MASS_KG = 56.699;
-    public static final double ROBOT_MOI = 4.5;
-    public static final double WHEEL_COF = 1.2;
-
-    public static final ModuleConfig moduleConfig = new ModuleConfig(
-            2,
-            DriveConstants.MAX_SPEED_METERS_PER_SECOND,
-            Constants.AutoConstants.WHEEL_COF,
-            DCMotor.getNEO(1).withReduction(6.75),
-            60,
-          1);
-
-    /* Constraint for the motion profilied robot angle controller */
-    public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
-        new TrapezoidProfile.Constraints(
-            kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
-    }
 }

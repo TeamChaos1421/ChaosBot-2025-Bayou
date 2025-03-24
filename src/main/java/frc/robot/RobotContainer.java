@@ -7,12 +7,10 @@ package frc.robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriverController;
 import frc.robot.Constants.OperatorController;
+import frc.robot.autos.DriveForward;
 import frc.robot.Constants.ButtonPanel;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
@@ -48,6 +46,7 @@ public class RobotContainer {
   private final ZeroHeading zeroHeading = new ZeroHeading(driveTrain);
 
   private final SendableChooser<Command> autoChooser;
+  private final Command a_DriveForward = new DriveForward(driveTrain);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(DriverController.DRIVER_JOYSTICK);
@@ -98,17 +97,9 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
 
-    //Pathplanner commands - templates
-    new EventTrigger("intake coral").whileTrue(s_CoralIntake.run(() -> s_CoralIntake.setSpeed(0.7)));
-    new EventTrigger("outtake coral").whileTrue(s_CoralIntake.run(() -> s_CoralIntake.setSpeed(-0.5)));
-    new EventTrigger("set intake").onTrue(Commands.runOnce(() -> States.mElevatorState = States.ElevatorStates.intake));
-    new EventTrigger("set l1").onTrue(Commands.runOnce(() -> States.mElevatorState = States.ElevatorStates.l1));
-    new EventTrigger("set l2").onTrue(Commands.runOnce(() -> States.mElevatorState = States.ElevatorStates.l2));
-    new EventTrigger("set l3").onTrue(Commands.runOnce(() -> States.mElevatorState = States.ElevatorStates.l3));
-    new EventTrigger("set l4").onTrue(Commands.runOnce(() -> States.mElevatorState = States.ElevatorStates.l4));
-
     //Auto chooser
-    autoChooser = AutoBuilder.buildAutoChooser("New Auto"); // Default auto will be `Commands.none()`
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("Drive Forward", a_DriveForward);
     SmartDashboard.putData("Auto Mode", autoChooser);
   }
 
@@ -159,7 +150,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
     return autoChooser.getSelected();
   }
 }
