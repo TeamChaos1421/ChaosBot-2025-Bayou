@@ -32,14 +32,14 @@ public class ElevatorCommand extends Command {
         } else {
             switch(States.mElevatorState){
                 case intake:
-                    if (s_Elevator.getPos() <= 0) {
+                    if (s_Elevator.getPos() <= 2) {
                         motorSpeed = 0;
                     } else {
                         motorSpeed = elevatorController.calculate(s_Elevator.getPos(), Constants.Elevator.intakePOS);
                     }
                     break;
                 case l1:
-                    if (s_Elevator.getPos() <= 0) {
+                    if (s_Elevator.getPos() <= 2) {
                         motorSpeed = 0;
                     } else {
                         motorSpeed = elevatorController.calculate(s_Elevator.getPos(), Constants.Elevator.l1POS);

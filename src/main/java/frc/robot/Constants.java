@@ -6,8 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -19,6 +17,8 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public static final String canivoreID = "Canivore";
 
   public static final class ModuleConstants {
     public static final double MAX_MODULE_ANGULAR_SPEED_RADIANS_PER_SECOND = 10000.; //2 * 2 * Math.PI;
@@ -52,7 +52,7 @@ public final class Constants {
   }
 
   public static final class Elevator {
-      public static final int leftElevatorID = 21;
+      public static final int leftElevatorID = 20;
       public static final int rightElevatorID = 22;
       public static final int elevatorEncoderID = 3;
 
@@ -60,9 +60,9 @@ public final class Constants {
       public static final double l1POS = 0;
       public static final double l2POS = 10.5;
       public static final double aLPOS = 41;
-      public static final double l3POS = 33;
+      public static final double l3POS = 34;
       public static final double aHPOS = 62.5;
-      public static final double l4POS = 70;
+      public static final double l4POS = 70.5;
 
       public static final double elevatorKP = 0.035;
       public static final double elevatorKI = 0.005;
@@ -94,8 +94,6 @@ public final class Constants {
     public static final double REAR_RIGHT_MAGNET_OFFSET = -0.1640625;
 
     public static final int GYROSCOPE_ID = 0;
-
-    public static final double DRIVE_SPEED = 1;
 
     public static final double TRACK_WIDTH = Units.inchesToMeters(25);
     public static final double WHEEL_BASE = Units.inchesToMeters(24.5);

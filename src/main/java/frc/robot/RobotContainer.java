@@ -4,11 +4,11 @@
 
 package frc.robot;
 
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.DriverController;
 import frc.robot.Constants.OperatorController;
 import frc.robot.autos.DriveForward;
 import frc.robot.Constants.ButtonPanel;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
@@ -60,9 +60,9 @@ public class RobotContainer {
 
     driveTrain.setDefaultCommand(
       new RunCommand(() -> driveTrain.drive(
-        -MathUtil.applyDeadband(driverController.getLeftY(), Constants.DriverController.XY_DEADBAND)*DriveConstants.DRIVE_SPEED, 
-        -MathUtil.applyDeadband(driverController.getLeftX(), Constants.DriverController.XY_DEADBAND)*DriveConstants.DRIVE_SPEED, 
-        -MathUtil.applyDeadband(driverController.getRightX(), Constants.DriverController.ROT_DEADBAND)*DriveConstants.DRIVE_SPEED, 
+        -MathUtil.applyDeadband(driverController.getLeftY(), Constants.DriverController.XY_DEADBAND) * States.mElevatorState.driveSpeed, 
+        -MathUtil.applyDeadband(driverController.getLeftX(), Constants.DriverController.XY_DEADBAND) * States.mElevatorState.driveSpeed, 
+        -MathUtil.applyDeadband(driverController.getRightX(), Constants.DriverController.ROT_DEADBAND) * States.mElevatorState.driveSpeed, 
         States.mFieldOriented), 
       driveTrain));
 

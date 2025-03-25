@@ -30,9 +30,9 @@ public class AlignAprilTag extends Command {
         Rta = LimelightHelpers.getTA("limelight-right");
 
         if (target == DriveConstants.LEFT_TARGET) {
-            driveTrain.drive(Rtx * 0.05, (100 - Rta) * 0.03, 0, false);
+            driveTrain.drive((12 - Rta) * 0.01 + 0.01, -Rtx * 0.02, 0, false);
         } else {
-            driveTrain.drive(Ltx * 0.05, (100 - Lta) * 0.03, 0, false);
+            driveTrain.drive((12 - Lta) * 0.01 + 0.01, -Ltx * 0.02,  0, false);
         }
     }
 
