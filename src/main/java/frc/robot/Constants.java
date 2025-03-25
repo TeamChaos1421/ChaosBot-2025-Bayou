@@ -70,6 +70,8 @@ public final class Constants {
   }
 
   public static class DriveConstants {
+    public static final String LEFT_TARGET = "LEFT";
+    public static final String RIGHT_TARGET = "RIGHT";
 
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 52;
     public static final int FRONT_LEFT_TURNING_MOTOR_ID = 59;

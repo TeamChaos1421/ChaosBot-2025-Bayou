@@ -64,19 +64,7 @@ public class DriveTrain extends SubsystemBase {
   public SwerveDriveOdometry swerveOdometry;
 
   /** Creates a new DriveTrain. */
-  public DriveTrain(Limelight l) {
-
-    limelight = l;
-
-    limelightXFilter = new MedianFilter(3);
-    limelightYFilter = new MedianFilter(3);
-    limelightYawFilter = new MedianFilter(3);
-
-    compositeLatency = 0;
-    compositeVisionPose = new Pose2d();
-
-    isVisionValid = true;
-  }
+  public DriveTrain() {}
 
   @Override
   public void periodic() {

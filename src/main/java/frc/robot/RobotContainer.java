@@ -35,8 +35,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final Limelight limelight = new Limelight();
-  private final DriveTrain driveTrain = new DriveTrain(limelight);
+  private final DriveTrain driveTrain = new DriveTrain();
   private final Climber s_Climber = new Climber();
   private final Elevator s_Elevator = new Elevator();
   private final CoralIntake s_CoralIntake = new CoralIntake();
@@ -118,6 +117,8 @@ public class RobotContainer {
     driverController.leftBumper()
       .onTrue(new InstantCommand(() -> States.mFieldOriented = false))
       .onFalse(new InstantCommand(() -> States.mFieldOriented = true));
+    driverController.pov(90).whileTrue(new AlignAprilTag(driveTrain, DriveConstants.RIGHT_TARGET));
+    driverController.pov(270).whileTrue(new AlignAprilTag(driveTrain, DriveConstants.LEFT_TARGET));
 
     // CODRIVER XBOX CONTROLLER
     operatorController.start().onTrue(
