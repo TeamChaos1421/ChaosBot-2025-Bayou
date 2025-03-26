@@ -117,8 +117,8 @@ public class RobotContainer {
     driverController.leftBumper()
       .onTrue(new InstantCommand(() -> States.mFieldOriented = false))
       .onFalse(new InstantCommand(() -> States.mFieldOriented = true));
-    driverController.pov(90).whileTrue(new AlignAprilTag(driveTrain, DriveConstants.RIGHT_TARGET));
-    driverController.pov(270).whileTrue(new AlignAprilTag(driveTrain, DriveConstants.LEFT_TARGET));
+    driverController.pov(90).whileTrue(new AlignAprilTag(driveTrain, DriveConstants.RIGHT_TARGET, false));
+    driverController.pov(270).whileTrue(new AlignAprilTag(driveTrain, DriveConstants.LEFT_TARGET, false));
 
     // CODRIVER XBOX CONTROLLER
     operatorController.start().onTrue(

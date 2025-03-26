@@ -73,6 +73,9 @@ public final class Constants {
     public static final String LEFT_TARGET = "LEFT";
     public static final String RIGHT_TARGET = "RIGHT";
 
+    public static final double[] aprilTagAngles = {0, -120, 120, 90, 0, 0, 60, 0, -60, -120, 180, 120, 120, -120, 0, 0, 90, -60, 0, 60, 120, 180, -120};
+    public static final double[] InvertedTagAngles = {0, 120, -120, -90, 180, 180, -60, 180, 60, 120, 0, -120, -120, 120, 180, 180, -90, 60, 180, -60, -120, 0, 120};
+
     public static final int FRONT_LEFT_DRIVE_MOTOR_ID = 52;
     public static final int FRONT_LEFT_TURNING_MOTOR_ID = 59;
     public static final int FRONT_LEFT_TURNING_ENCODER_ID = 11;

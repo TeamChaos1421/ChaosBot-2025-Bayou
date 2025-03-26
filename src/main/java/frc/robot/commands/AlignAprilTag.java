@@ -8,39 +8,43 @@ import frc.robot.subsystems.DriveTrain;
 public class AlignAprilTag extends Command {
     DriveTrain driveTrain;
     String target;
+    String limelightName;
 
-    double Ltx;
-    double Lta;
+    boolean tv;
+    double tx;
+    double ta;
+    int id;
 
-    double Rtx;
-    double Rta;
+    double[] targetAngles;
 
-    public AlignAprilTag(DriveTrain dt, String tgt) {
+    public AlignAprilTag(DriveTrain dt, String tgt, boolean isAuto) {
         driveTrain = dt;
         target = tgt;
+        limelightName = (target == DriveConstants.LEFT_TARGET ? "limelight-right" : "limelight-left");
+        targetAngles = (isAuto ? DriveConstants.InvertedTagAngles : DriveConstants.aprilTagAngles);
         addRequirements(driveTrain);
     }
     
     @Override
     public void execute() {
-        Ltx = LimelightHelpers.getTX("limelight-left");
-        Lta = LimelightHelpers.getTA("limelight-left");
+        tv = LimelightHelpers.getTV(limelightName);
+        tx = LimelightHelpers.getTX(limelightName);
+        ta = LimelightHelpers.getTA(limelightName);
+        id = (int) Math.round(LimelightHelpers.getFiducialID(limelightName));
 
-        Rtx = LimelightHelpers.getTX("limelight-right");
-        Rta = LimelightHelpers.getTA("limelight-right");
-
-        if (target == DriveConstants.LEFT_TARGET) {
-            driveTrain.drive((12 - Rta) * 0.01 + 0.01, -Rtx * 0.02, 0, false);
-        } else {
-            driveTrain.drive((12 - Lta) * 0.01 + 0.01, -Ltx * 0.02,  0, false);
+        if (tv && id > 0) {
+            driveTrain.drive(
+                (12 - ta) * 0.01 + 0.01, // Forward and Back
+                -tx * 0.03, // Left and Right
+                (targetAngles[id] - (driveTrain.getHeading())) * 0.03, // Rotation
+                false
+            );
         }
     }
 
     @Override
     public boolean isFinished() {
-        if (target == DriveConstants.LEFT_TARGET && Math.abs(Rtx) < 0.1 && Rta > 0.7) {
-            return true;
-        } else if (Math.abs(Ltx) < 0.1 && Lta > 0.7) {
+        if (Math.abs(tx) < 1 && Math.abs(ta - 12) < 1) {
             return true;
         } else {
             return false;
