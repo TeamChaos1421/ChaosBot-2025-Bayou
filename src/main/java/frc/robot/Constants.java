@@ -35,7 +35,14 @@ public final class Constants {
 
   }
 
-  public static final int climberCanID = 62;
+  public static final class Climber {
+    public static final int climberCanID = 62;
+    public static final int encoderA = 2;
+    public static final int encoderB = 3;
+
+    public static final int maxOut = -3700;
+    public static final int maxIn = 2600;
+  }
 
   public static final int kPCMCANId = 1;
  
@@ -56,17 +63,19 @@ public final class Constants {
       public static final int rightElevatorID = 22;
       public static final int elevatorEncoderID = 3;
 
-      public static final double intakePOS = 2.5;
-      public static final double l1POS = 0;
-      public static final double l2POS = 10.5;
-      public static final double aLPOS = 41;
-      public static final double l3POS = 34;
-      public static final double aHPOS = 62.5;
-      public static final double l4POS = 70.5;
+      public static final double intakePOS = 3.5;
+      public static final double l1POS = 5;
+      public static final double l2POS = 13;
+      public static final double aLPOS = 39;
+      public static final double l3POS = 37;
+      public static final double aHPOS = 63;
+      public static final double l4POS = 75;
 
-      public static final double elevatorKP = 0.035;
-      public static final double elevatorKI = 0.005;
+      public static final double elevatorKP = 0.02;
+      public static final double elevatorKI = 0.003;
       public static final double elevatorKD = 0.0;
+      public static final double maxUpSpeed = 1.0;
+      public static final double maxDownSpeed = -0.5;
   }
 
   public static class DriveConstants {
@@ -146,6 +155,8 @@ public final class Constants {
   }
 
   public static class OperatorController {
+    public static final double XY_DEADBAND = 0.1;
+
     public static final int OPERATOR_JOYSTICK = 1;
     //Controller Axes
     public static final int LEFT_Y_AXIS = 1; 

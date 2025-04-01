@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -10,13 +11,10 @@ import frc.robot.Constants;
 public class Elevator extends SubsystemBase {
     private TalonFX mLeftElevator;
     private TalonFX mRightElevator;
-    private CANcoder elevatorEncoder;
 
     public Elevator() {
         mLeftElevator = new TalonFX(Constants.Elevator.leftElevatorID);
         mRightElevator = new TalonFX(Constants.Elevator.rightElevatorID);
-
-        elevatorEncoder = new CANcoder(Constants.Elevator.elevatorEncoderID);
     }
 
     public Elevator setSpeed(double speed) {
@@ -27,7 +25,10 @@ public class Elevator extends SubsystemBase {
 
     public double getPos() {
         return -mRightElevator.getPosition().getValueAsDouble();
-        // return elevatorEncoder.getPosition().getValueAsDouble();
+    }
+
+    public void zeroPos() {
+        mRightElevator.setPosition(0.0);
     }
 
     @Override

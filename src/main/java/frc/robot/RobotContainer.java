@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DriverController;
 import frc.robot.Constants.OperatorController;
+import frc.robot.autos.CenterCoral;
 import frc.robot.autos.DriveForward;
 import frc.robot.Constants.ButtonPanel;
 import frc.robot.Constants.DriveConstants;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.*;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -41,11 +43,17 @@ public class RobotContainer {
   private final CoralIntake s_CoralIntake = new CoralIntake();
   private final AlgaeIntake s_AlgaeIntake = new AlgaeIntake();
   private final Pneumatics s_Pneumatics = new Pneumatics();
+  private final Leds s_Leds = new Leds();
+
+  public final DigitalInput elevatorSwitch = new DigitalInput(0);
+  public final DigitalInput testSwitch = new DigitalInput(1);
+  private final Trigger resetElevator = new Trigger(elevatorSwitch::get);
 
   private final ZeroHeading zeroHeading = new ZeroHeading(driveTrain);
 
   private final SendableChooser<Command> autoChooser;
   private final Command a_DriveForward = new DriveForward(driveTrain);
+  private final Command a_CenterCoral = new CenterCoral(driveTrain, s_CoralIntake, s_AlgaeIntake);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController driverController = new CommandXboxController(DriverController.DRIVER_JOYSTICK);
@@ -69,7 +77,7 @@ public class RobotContainer {
     s_Elevator.setDefaultCommand(
         new ElevatorCommand(
             s_Elevator, 
-            () -> (operatorController.getRawAxis(XboxController.Axis.kRightTrigger.value) - operatorController.getRawAxis(XboxController.Axis.kLeftTrigger.value))
+            () -> (-MathUtil.applyDeadband(operatorController.getLeftY(), Constants.OperatorController.XY_DEADBAND))
         )
     );
 
@@ -90,15 +98,26 @@ public class RobotContainer {
     );
 
     s_Climber.setDefaultCommand(Commands.run(
-        () -> s_Climber.setSpeed(-buttonPanel.getHID().getRawAxis(Joystick.kDefaultYChannel)),
+        () -> {
+          if (States.mElevatorToggle == false) {
+            s_Climber.setSpeed(-buttonPanel.getHID().getRawAxis(Joystick.kDefaultYChannel));
+          } else {
+            s_Climber.setSpeed(-MathUtil.applyDeadband(operatorController.getRightY(), Constants.OperatorController.XY_DEADBAND));
+          }
+          
+        },
         s_Climber
     ));
+
+    s_Leds.setDefaultCommand((Commands.run(() -> s_Leds.Blink(), s_Leds).ignoringDisable(true)));
+
     // Configure the trigger bindings
     configureBindings();
 
     //Auto chooser
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("Drive Forward", a_DriveForward);
+    autoChooser.addOption("Center Coral", a_CenterCoral);
     SmartDashboard.putData("Auto Mode", autoChooser);
   }
 
@@ -112,6 +131,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    resetElevator.onFalse(new InstantCommand(() -> s_Elevator.zeroPos()));
     // DRIVER XBOX CONTROLLER
     driverController.y().onTrue(zeroHeading);
     driverController.leftBumper()
@@ -126,6 +146,7 @@ public class RobotContainer {
             States.mElevatorToggle = !States.mElevatorToggle;
         })
     );
+    operatorController.back().onTrue(new InstantCommand(() -> s_Elevator.zeroPos()));
     operatorController.pov(0).onTrue(new InstantCommand(() -> s_AlgaeIntake.setAngle(Value.kForward)));
     operatorController.pov(180).onTrue(new InstantCommand(() -> s_AlgaeIntake.setAngle(Value.kReverse)));
 
