@@ -21,7 +21,7 @@ public class CenterCoral extends SequentialCommandGroup {
             new InstantCommand(() -> coralIntake.setSpeed(1.0)),
             new InstantCommand(() -> driveTrain.drive(-0.1, -0.05, 0, false)),
             new WaitCommand(1.0),
-            new InstantCommand(() -> driveTrain.drive(0, 0, 0, false)),
+            new InstantCommand(() -> driveTrain.stop()),
             new InstantCommand(() -> States.mElevatorState = ElevatorStates.aL),
             new InstantCommand(() -> algaeIntake.setAngle(Value.kReverse)),
             new InstantCommand(() -> algaeIntake.setSpeed(-1.0)),
