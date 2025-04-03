@@ -28,7 +28,7 @@ public class ElevatorCommand extends Command {
         SmartDashboard.putString("Elevator State", States.mElevatorState.name());
 
         if(States.mElevatorToggle) {
-            motorSpeed = manualSpeed.getAsDouble() * 0.25;
+            motorSpeed = manualSpeed.getAsDouble() * 0.7;
         } else {
             switch(States.mElevatorState){
                 case intake:

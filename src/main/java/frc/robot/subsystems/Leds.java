@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Leds extends SubsystemBase{
-    private Solenoid whiteStrips;
+    public Solenoid whiteStrips;
     public Timer mTimer;
 
     public Leds() {

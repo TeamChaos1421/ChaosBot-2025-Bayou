@@ -109,7 +109,15 @@ public class RobotContainer {
         s_Climber
     ));
 
-    s_Leds.setDefaultCommand((Commands.run(() -> s_Leds.Blink(), s_Leds).ignoringDisable(true)));
+    s_Leds.setDefaultCommand(
+      (
+        Commands.run(() -> {
+          if(States.mElevatorToggle) {
+            s_Leds.whiteStrips.set(true);
+          } else {
+            s_Leds.Blink();
+          }
+        }, s_Leds).ignoringDisable(true)));
 
     // Configure the trigger bindings
     configureBindings();
@@ -149,6 +157,12 @@ public class RobotContainer {
     operatorController.back().onTrue(new InstantCommand(() -> s_Elevator.zeroPos()));
     operatorController.pov(0).onTrue(new InstantCommand(() -> s_AlgaeIntake.setAngle(Value.kForward)));
     operatorController.pov(180).onTrue(new InstantCommand(() -> s_AlgaeIntake.setAngle(Value.kReverse)));
+    operatorController.rightBumper().onTrue(new InstantCommand(() -> {
+      if(States.mElevatorToggle){s_CoralIntake.setAngle(Value.kReverse);
+    }}));
+    operatorController.leftBumper().onTrue(new InstantCommand(() -> {
+      if(States.mElevatorToggle){s_CoralIntake.setAngle(Value.kForward);
+    }}));
 
     // CODRIVER BUTTON PANEL
     buttonPanel.button(ButtonPanel.setTargetIntake).onTrue(new InstantCommand(() -> {States.mElevatorState = States.ElevatorStates.intake;}));

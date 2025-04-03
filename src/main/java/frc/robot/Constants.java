@@ -41,7 +41,7 @@ public final class Constants {
     public static final int encoderB = 3;
 
     public static final int maxOut = -3700;
-    public static final int maxIn = 2600;
+    public static final int maxIn = 10000;
   }
 
   public static final int kPCMCANId = 1;
@@ -68,7 +68,7 @@ public final class Constants {
       public static final double l2POS = 13;
       public static final double aLPOS = 39;
       public static final double l3POS = 37;
-      public static final double aHPOS = 63;
+      public static final double aHPOS = 64.5;
       public static final double l4POS = 75;
 
       public static final double elevatorKP = 0.02;

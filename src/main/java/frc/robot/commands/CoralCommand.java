@@ -26,30 +26,32 @@ public class CoralCommand extends Command {
         } else if (outtakeSup.getAsBoolean()) {
             s_CoralIntake.setSpeed(0.5);
         } else {
-            s_CoralIntake.setSpeed(-0.1);
+            s_CoralIntake.setSpeed(-0.3);
         }
 
-        switch(States.mElevatorState){
-            case intake:
-                s_CoralIntake.setAngle(Value.kForward);
-                break;
-            case l1:
-                s_CoralIntake.setAngle(Value.kReverse);
-                break;
-            case l2:
-                s_CoralIntake.setAngle(Value.kReverse);
-                break;
-            case aL:
-                s_CoralIntake.setAngle(Value.kForward);
-                break;
-            case l3:
-                s_CoralIntake.setAngle(Value.kReverse);
-                break;
-            case aH:
-                s_CoralIntake.setAngle(Value.kForward);
-                break;
-            case l4:
-                s_CoralIntake.setAngle(Value.kReverse);
+        if(!States.mElevatorToggle) {
+            switch(States.mElevatorState){
+                case intake:
+                    s_CoralIntake.setAngle(Value.kForward);
+                    break;
+                case l1:
+                    s_CoralIntake.setAngle(Value.kReverse);
+                    break;
+                case l2:
+                    s_CoralIntake.setAngle(Value.kReverse);
+                    break;
+                case aL:
+                    s_CoralIntake.setAngle(Value.kForward);
+                    break;
+                case l3:
+                    s_CoralIntake.setAngle(Value.kReverse);
+                    break;
+                case aH:
+                    s_CoralIntake.setAngle(Value.kForward);
+                    break;
+                case l4:
+                    s_CoralIntake.setAngle(Value.kReverse);
+            }
         }
     }
 }
